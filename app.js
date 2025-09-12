@@ -9,8 +9,15 @@ const app = new App({
 /* Add functionality here */
 
 (async () => {
-  // Start the app
-  await app.start(process.env.PORT || 3000);
+    // Start the app
+    await app.start(process.env.PORT || 3000);
+
+    app.message(/^(hi|hello|hey).*/, async ({ context, say }) => {
+        // RegExp matches are inside of context.matches
+        const greeting = context.matches[0];
+
+        await say(`${greeting}, how are you?`);
+    });
 
   console.log('⚡️ Bolt app is running!');
 })();
