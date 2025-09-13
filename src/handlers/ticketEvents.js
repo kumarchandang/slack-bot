@@ -8,11 +8,11 @@ export async function handleNodeAdded(req, res) {
             return res.status(400).send({ error: "Missing email or conversation details" });
         }
 
-        const { subject = 'a ticket', mailbox = 'FreeScout' } = conversation;
+        const { subject = 'a ticket', mailbox = 'FreeScout', url = '' } = conversation;
         await notifyUsers(
             req.app.client,
             email,
-            buildBlock(`*You were mentioned in ${subject} - ${mailbox}*`),
+            buildBlock(`*You were mentioned in ${subject} - ${mailbox}*`, url),
             "📌 You were mentioned in a ticket"
         );
 
@@ -35,7 +35,7 @@ export async function handleCustomerReply(req, res) {
         await notifyUsers(
             req.app.client,
             email,
-            buildBlock(`📩 *Customer replied on ${subject} - ${mailbox}*`),
+            buildBlock(`📩 *Customer replied on ${subject} - ${mailbox}*`, url),
             "📩 Customer replied"
         );
 
@@ -58,7 +58,7 @@ export async function handleTicketAssigned(req, res) {
         await notifyUsers(
             req.app.client,
             email,
-            buildBlock(`🎟️ *A new ticket was assigned to you: ${subject} - ${mailbox}*`),
+            buildBlock(`🎟️ *A new ticket was assigned to you: ${subject} - ${mailbox}*`, url),
             "🎟️ Ticket assigned"
         );
 

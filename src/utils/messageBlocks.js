@@ -1,4 +1,4 @@
-export function buildBlock(text) {
+export function buildBlock(text, url = '') {
     return [
         {
             type: "section",
