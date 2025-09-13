@@ -16,36 +16,53 @@ const app = new App({
 // ---------------------
 // Custom REST API for FreeScout
 // ---------------------
-receiver.router.post('/notify', express.json(), async (req, res) => {
-  const { email, message } = req.body;
-  
+receiver.router.post('/node_added', express.json(), async (req, res) => {
+  let { email, message } = req.body;
+
   if (!email || !message) {
     return res.status(400).send({ error: 'Missing email or message' });
   }
-  
+
+  // Normalize emails into an array
+  if (!Array.isArray(email)) {
+    email = [email]; // wrap single email into array
+  }
+
+  const results = [];
+
   try {
-    // Lookup Slack user by email
-    const user = await app.client.users.lookupByEmail({
-      token: process.env.SLACK_BOT_TOKEN,
-      email: email,
-    });
-    
-    if (!user.ok || !user.user || !user.user.id) {
-      return res.status(404).send({ error: 'Slack user not found' });
+    for (const e of email) {
+      try {
+        // Lookup Slack user by email
+        const user = await app.client.users.lookupByEmail({
+          token: process.env.SLACK_BOT_TOKEN,
+          email: e,
+        });
+
+        if (!user.ok || !user.user || !user.user.id) {
+          results.push({ email: e, status: 'not_found' });
+          continue;
+        }
+
+        // Send DM
+        await app.client.chat.postMessage({
+          token: process.env.SLACK_BOT_TOKEN,
+          channel: user.user.id,
+          text: message,
+        });
+
+        console.log(`Message sent to ${e}: ${message}`);
+        results.push({ email: e, status: 'sent' });
+      } catch (innerErr) {
+        console.error(`Slack notify error for ${e}:`, innerErr);
+        results.push({ email: e, status: 'error', error: innerErr.message });
+      }
     }
-    
-    // Send DM
-    await app.client.chat.postMessage({
-      token: process.env.SLACK_BOT_TOKEN,
-      channel: user.user.id,
-      text: message,
-    });
-    
-    console.log(`Message sent to ${email}: ${message}`);
-    res.send({ success: true });
+
+    res.send({ success: true, results });
   } catch (err) {
     console.error('Slack notify error:', err);
-    res.status(500).send({ error: 'Failed to send Slack message' });
+    res.status(500).send({ error: 'Failed to process notifications' });
   }
 });
 
