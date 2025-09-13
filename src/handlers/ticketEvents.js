@@ -10,7 +10,6 @@ export async function handleNodeAdded(req, res) {
 
         const { subject = 'a ticket', mailbox = 'FreeScout', url = '' } = conversation;
         await notifyUsers(
-            req.app.client,
             email,
             buildBlock(`*You were mentioned in ${subject} - ${mailbox}*`, url),
             "📌 You were mentioned in a ticket"
@@ -33,7 +32,6 @@ export async function handleCustomerReply(req, res) {
         const { subject = 'a ticket', mailbox = 'FreeScout' } = conversation;
 
         await notifyUsers(
-            req.app.client,
             email,
             buildBlock(`📩 *Customer replied on ${subject} - ${mailbox}*`, url),
             "📩 Customer replied"
@@ -56,7 +54,6 @@ export async function handleTicketAssigned(req, res) {
         const { subject = 'a ticket', mailbox = 'FreeScout' } = conversation;
 
         await notifyUsers(
-            req.app.client,
             email,
             buildBlock(`🎟️ *A new ticket was assigned to you: ${subject} - ${mailbox}*`, url),
             "🎟️ Ticket assigned"
@@ -69,7 +66,7 @@ export async function handleTicketAssigned(req, res) {
     }
 }
 
-async function notifyUsers(client, emails, blocks, fallbackText = '🔔 FreeScout Notification') {
+async function notifyUsers(emails, blocks, fallbackText = '🔔 FreeScout Notification') {
     try {
         if (!Array.isArray(emails)) {
             emails = [emails];
@@ -77,13 +74,13 @@ async function notifyUsers(client, emails, blocks, fallbackText = '🔔 FreeScou
 
         for (const e of emails) {
             try {
-                const userId = await findUserByEmail(client, e);
+                const userId = await findUserByEmail(e);
                 if (!userId) {
                     console.warn(`No Slack user found for email: ${e}`);
                     continue;
                 }
 
-                await sendMessageToUser(client, userId, fallbackText, blocks);
+                await sendMessageToUser(userId, fallbackText, blocks);
             } catch (err) {
                 console.error(`Failed to notify ${e}:`, err);
             }

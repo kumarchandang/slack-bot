@@ -1,9 +1,12 @@
-export async function sendMessageToUser(client, userId, text, blocks = null) {
+import { app } from '../slackApp.js';
+
+export async function sendMessageToUser(userId, text, blocks = null) {
     try {
-        const result = await client.chat.postMessage({
+        const result = await app.client.chat.postMessage({
+            token: process.env.SLACK_BOT_TOKEN,
             channel: userId,
             text: text || "🔔 New notification", // Slack requires fallback
-            blocks: blocks || undefined
+            blocks
         });
 
         if (!result.ok) {
@@ -18,14 +21,17 @@ export async function sendMessageToUser(client, userId, text, blocks = null) {
     }
 }
 
-export async function findUserByEmail(client, email) {
+export async function findUserByEmail(email) {
     if (!email) {
         console.warn("findUserByEmail called with empty email");
         return null;
     }
 
     try {
-        const result = await client.users.lookupByEmail({ email });
+        const result = await app.client.users.lookupByEmail({
+            token: process.env.SLACK_BOT_TOKEN,
+            email,
+        });
 
         if (result.ok && result.user?.id) {
             return result.user.id;
