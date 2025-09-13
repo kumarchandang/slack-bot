@@ -12,6 +12,8 @@ const app = new App({
     receiver,
 });
 
+receiver.router.use(express.json());
+
 receiver.router.post('/node_added', handleNodeAdded);
 receiver.router.post('/customer_replied', handleCustomerReply);
 receiver.router.post('/ticket_assigned', handleTicketAssigned);
