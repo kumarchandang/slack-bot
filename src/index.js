@@ -1,13 +1,5 @@
-import 'dotenv/config'; 
-import { app, receiver } from './slackApp.js';
-import freescoutRoutes from './routes/freescout.js';
-// import { registerQueryHandler } from './handlers/queries.js';
-
-// Attach FreeScout webhook routes
-receiver.router.use('/freescout', freescoutRoutes);
-
-// Register Slack query listener
-// registerQueryHandler(app);
+import 'dotenv/config';
+import { app } from './slackApp.js';
 
 (async () => {
     const port = process.env.PORT || 3000;
