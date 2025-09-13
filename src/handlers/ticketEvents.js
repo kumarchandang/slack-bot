@@ -30,10 +30,12 @@ export async function handleCustomerReply(req, res) {
             return res.status(400).send({ error: "Missing email or conversation details" });
         }
 
+        const { subject = 'a ticket', mailbox = 'FreeScout' } = conversation;
+
         await notifyUsers(
             req.app.client,
             email,
-            buildConversationBlock(conversation),
+            buildBlock(`📩 *Customer replied on ${subject} - ${mailbox}*`),
             "📩 Customer replied"
         );
 
@@ -46,15 +48,17 @@ export async function handleCustomerReply(req, res) {
 
 export async function handleTicketAssigned(req, res) {
     try {
-        const { email, ticket } = req.body;
-        if (!email || !ticket) {
+        const { email, conversation } = req.body;
+        if (!email || !conversation) {
             return res.status(400).send({ error: "Missing email or ticket details" });
         }
+
+        const { subject = 'a ticket', mailbox = 'FreeScout' } = conversation;
 
         await notifyUsers(
             req.app.client,
             email,
-            buildTicketAssignedBlock(ticket),
+            buildBlock(`🎟️ *A new ticket was assigned to you: ${subject} - ${mailbox}*`),
             "🎟️ Ticket assigned"
         );
 

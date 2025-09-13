@@ -1,4 +1,5 @@
 import pkg from '@slack/bolt';
+import express from 'express';
 import { handleNodeAdded, handleCustomerReply, handleTicketAssigned } from './handlers/ticketEvents.js';
 
 const { App, ExpressReceiver } = pkg;
