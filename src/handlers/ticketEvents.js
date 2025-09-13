@@ -29,7 +29,7 @@ export async function handleCustomerReply(req, res) {
             return res.status(400).send({ error: "Missing email or conversation details" });
         }
 
-        const { subject = 'a ticket', mailbox = 'FreeScout' } = conversation;
+        const { subject = 'a ticket', mailbox = 'FreeScout', url = '' } = conversation;
 
         await notifyUsers(
             email,
@@ -51,7 +51,7 @@ export async function handleTicketAssigned(req, res) {
             return res.status(400).send({ error: "Missing email or ticket details" });
         }
 
-        const { subject = 'a ticket', mailbox = 'FreeScout' } = conversation;
+        const { subject = 'a ticket', mailbox = 'FreeScout', url = '' } = conversation;
 
         await notifyUsers(
             email,
