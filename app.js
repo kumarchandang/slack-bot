@@ -51,7 +51,7 @@ receiver.router.post('/node_added', express.json(), async (req, res) => {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `📌 *You were mentioned in ${subject} - ${mailbox}`
+            text: `*You were mentioned in ${subject} - ${mailbox}*`
           }
         },
         {
