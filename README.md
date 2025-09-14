@@ -1,41 +1,16 @@
-# Slack Quote Bot
+# Slack + FreeScout Integration Bot
 
-A simple Slack bot that responds with random quotes when mentioned with the word "quote".
+This project connects **FreeScout** with **Slack**.  
+It listens for events from FreeScout and sends formatted messages to Slack users.
 
-## Setup
+## What it does
+- Sends a Slack message when a ticket is assigned to the user
+- Notifies Slack users when a customer replies
+- Posts internal note notifications to the right Slack user
 
-1. Create a new Slack App at [api.slack.com/apps](https://api.slack.com/apps)
-2. Under "OAuth & Permissions", add the following bot token scopes:
-   - `chat:write`
-   - `app_mentions:read`
-   - `channels:history`
-3. Install the app to your workspace
-4. Copy your Bot Token and Signing Secret
-5. Create a `.env` file based on `.env.example` and fill in your credentials:
-   ```
-   SLACK_SIGNING_SECRET=your_slack_signing_secret_here
-   SLACK_BOT_TOKEN=your_slack_bot_token_here
-   PORT=12000
-   ```
-
-## Installation
-
-```bash
-npm install
-```
-
-## Running the Bot
-
-```bash
-npm start
-```
-
-## Usage
-
-In any channel where the bot is present, type "quote" and the bot will respond with a random quote.
-
-## Dependencies
-
-- @slack/bolt
-- axios
-- dotenv
+## Roadmap
+- [ ] Support natural language queries in Slack (e.g. "find the root cause of ticket #123")
+- [ ] Add FreeScout tools (`get_ticket`, `analyze_ticket`, `add_note`, `update_ticket`, `search_tickets`)
+- [ ] Generate draft replies using LLM
+- [ ] Add Slack slash commands for ticket actions
+- [ ] Add interactive modals for updating or replying to tickets
