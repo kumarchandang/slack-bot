@@ -1,5 +1,6 @@
 import pkg from '@slack/bolt';
 import express from 'express';
+import authenticate from './middleware/auth.js';
 import { handleNodeAdded, handleCustomerReply, handleTicketAssigned } from './handlers/ticketEvents.js';
 
 const { App, ExpressReceiver } = pkg;
@@ -15,8 +16,8 @@ const app = new App({
 
 receiver.router.use(express.json());
 
-receiver.router.post('/node_added', handleNodeAdded);
-receiver.router.post('/customer_replied', handleCustomerReply);
-receiver.router.post('/ticket_assigned', handleTicketAssigned);
+receiver.router.post('/node_added', authenticate, handleNodeAdded);
+receiver.router.post('/customer_replied', authenticate, handleCustomerReply);
+receiver.router.post('/ticket_assigned', authenticate, handleTicketAssigned);
 
 export { app, receiver };
